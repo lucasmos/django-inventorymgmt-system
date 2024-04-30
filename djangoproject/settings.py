@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-62x^zwo+gh@l04rbbd%7e1r^n@1z%gxu%ud^_9%dnq)$v221(3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = []
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-secondary',
