@@ -106,8 +106,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'stockmgmt',
-        'USER': 'papa',
-        'PASSWORD':'papa1',
+        'USER': 'luki',
+        'PASSWORD':'luki7',
     }
 }
 
