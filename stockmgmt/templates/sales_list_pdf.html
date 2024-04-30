@@ -1,0 +1,68 @@
+{% load humanize %} 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DES & JOE SALES REPORT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+        th, td {
+            border: 1px solid #112c81;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>DES & JOE SALES REPORT</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>DateTime</th>
+                <th>Transactional Code</th>
+                <th>Total</th>
+                <th>Tax Inclusive</th>
+                <th>Items</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sale_data %}
+            <tr>
+                <td>{{ sale.timestamp|date:'Y-m-d H:i' }}</td>
+                <td>{{ sale.transaction_code }}</td>
+                <td>{{ sale.grand_total|intcomma }}</td>
+                <td>({{ sale.tax }}%) {{ sale.tax_amount|intcomma:2 }}</td>
+                <td>{{ sale.item_count|intcomma }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</body>
+<footer>
+    Generated on: {{ now|date:'F d, Y H:i' }} &middot; Page {{ page_num }}
+</footer>
+</html>

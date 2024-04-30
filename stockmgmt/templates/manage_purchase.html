@@ -1,0 +1,97 @@
+<div class="container-fluid">
+    <form action="" id="purchase-form">
+        <input type="hidden" name="id" value="{% if purchase.pk %}{{purchase.pk}}{% endif %}">
+        <div class="form-group mb-3">
+            <label for="purchase_code" class="control-label">Purchase Code</label>
+            <input type="text" name="purchase_code" id="purchase_code" class="form-control form-control-sm rounded-0" value="{% if purchase.purchase_code %}{{purchase.purchase_code}}{% endif %}" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="product_name" class="control-label">Product</label>
+            <select name="product_name" id="product_name" class="form-select form-select-sm rounded-0" required>
+            {% if not purchase.product_name %}
+            <option value="" disabled selected></option>
+            {% else %}
+            <option value="" disabled></option>
+            {% endif %}
+            {% for product in products %}
+                {% if purchase.product == product %}
+                <option value="{{ product.id }}" selected>{{ product.code }}--{{ product.name }}</option>
+                {% else %}
+                <option value="{{ product.id }}">{{ product.code }}--{{ product.name }}</option>
+                {% endif %}
+            {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label for="supplier" class="control-label">Supplier Name</label>
+            <select name="supplier" id="supplier" class="form-select form-select-sm rounded-0" required>
+                {% if not purchase.supplier %}
+                <option value="" disabled selected></option>
+                {% else %}
+                <option value="" disabled></option>
+                {% endif %}
+                {% for supplier in suppliers %}
+                    {% if purchase.supplier == supplier %}
+                    <option value="{{ supplier.id }}" selected>{{ supplier.supplier_name }}</option>
+                    {% else %}
+                    <option value="{{ supplier.id }}">{{ supplier.supplier_name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+            <div class="form-group mb-3">
+                <label for="quantity_supplied" class="control-label">Quantity Supplied</label>
+                <input type="number" name="quantity_supplied" id="quantity_supplied" class="form-control form-control-sm rounded-0" value="{% if purchase.quantity_supplied %}{{purchase.quantity_supplied}}{% endif %}" required>
+            </div>
+    </form>
+    </div>
+    <script>
+        $(function() {
+            $('#purchase-form').submit(function(e) {
+                e.preventDefault();
+                var _this = $(this)
+                $('.err-msg').remove();
+                var el = $('<div>')
+                el.addClass("alert alert-danger err-msg")
+                el.hide()
+                if (_this[0].checkValidity() == false) {
+                    _this[0].reportValidity();
+                    return false;
+                }
+                start_loader();
+                $.ajax({
+                    headers: {
+                        "X-CSRFToken": '{{csrf_token}}'
+                    },
+                    url: "/save_purchase",
+                    data: new FormData($(this)[0]),
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    method: 'POST',
+                    type: 'POST',
+                    dataType: 'json',
+                    error: err => {
+                        console.log(err)
+                        end_loader();
+                    },
+                    success: function(resp) {
+                        if (typeof resp == 'object' && resp.status == 'success') {
+                            el.removeClass("alert alert-danger err-msg")
+                            location.reload()
+                        } else if (resp.status == 'failed' && !!resp.msg) {
+                            el.text(resp.msg)
+                        } else {
+                            el.text("An error occured", 'error');
+                            end_loader();
+                            console.error(resp)
+                        }
+                        _this.prepend(el)
+                        el.show('slow')
+                        $("html, body, .modal").scrollTop(0);
+                        end_loader()
+                    }
+                })
+            })
+        })
+    </script>

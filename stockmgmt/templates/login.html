@@ -1,0 +1,26 @@
+{% block title %}LOGIN PAGE{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}      
+
+<!-- For login.html -->
+<main role="main" class="container login-container">
+    <!-- Your login form content -->
+	{% for message in messages %}
+                  <div class="container-fluid p-0">
+                    <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="True">&times;</span>
+                      </button>
+                      {{ message }}
+                    </div>
+                  </div>
+          {% endfor %}
+  <h1>Login</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ login_form|crispy }}
+    <button class="btn btn-primary" type="submit">Login</button>
+  </form>
+  <p class="text-center">Don't have an account? <a href="/register">Create an account</a>.</p>
+</main>
+{% endblock %}

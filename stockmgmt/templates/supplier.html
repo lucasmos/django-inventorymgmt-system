@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %} 
+{% block pageContent %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.css' %}" />
+<div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+    <div class="mdc-card py-2">
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">Supplier List</h4>
+            <div class="tools">
+                <button class="btn btn-primary bg-gradient btn-sm rounded-0" id="create_new"><i class="mdi mdi-plus"></i><span> Add New</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+    <div class="mdc-card">
+        <div class="table-responsive">
+            <table id="example" class="table table-striped table-bordered" width="100%">
+               
+                <thead>
+                    <tr>
+                        <th class="text-center py-1">#</th>
+                        <th class="text-center py-1">Supplier ID</th>
+                        <th class="text-center py-1">Supplier Name</th>
+                        <th class="text-center py-1">Description</th>
+                        <th class="text-center py-1">Phone</th>
+                        <th class="text-center py-1">Address</th>
+                        <th class="text-center py-1">Email</th>
+                        <th class="text-center py-1">Status</th>
+                        <th class="text-center py-1">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sup in supplier %}
+                    <tr>
+                        <td class="px-2 py-1 text-center">{{ forloop.counter }}</td>
+                        <td class="px-2 py-1 text-start">{{ sup.supplier_id }}</td>
+                        <td class="px-2 py-1 text-start">{{ sup.supplier_name }}</td>
+                        <td class="px-2 py-1 text-start">{{ sup.description }}</td>
+                        <td class="px-2 py-1 text-start">{{ sup.phone }}</td>
+                        <td class="px-2 py-1 text-start">{{ sup.address }}</td>
+                        <td class="px-2 py-1 text-start">{{ sup.email }}</td>
+                        <td class="px-2 py-1 text-center">
+                            {% if sup.status == 1 %}
+                            <span class="badge bg-primary rounded-pill px-3">Active</span> {% else %}
+                            <span class="badge bg-secondary rounded-pill px-3">Inactive</span> {% endif %}
+                        </td>
+                        <td class="px-2 py-1 text-center">
+                            <button class="mdc-button mdc-button--raised p-1 icon-button filled-button--light mdc-ripple-upgraded edit-data" type="button" data-id="{{ sup.pk }}" title="Edit">
+                                <i class="material-icons mdc-button__icon">edit</i>
+                            </button>
+                            <button class="mdc-button mdc-button--raised p-1 icon-button filled-button--danger mdc-ripple-upgraded delete-data" type="button" data-id="{{ sup.pk }}" title="Delete">
+                                <i class="material-icons mdc-button__icon">deleteoutline</i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock pageContent %} 
+{% block ScriptBlock %}
+<script>
+   
+    $(function() {
+        $('#create_new').click(function() {
+            uni_modal("Add New Supplier", "{% url 'manage_supplier' %}")
+        })
+        $('.edit-data').click(function() {
+            uni_modal("Edit Supplier", '{% url "manage_supplier" %}/' + $(this).attr('data-id'))
+        })
+        $('.delete-data').click(function() {
+            _conf("Are you sure you want to delete this Supplier?", "delete_supplier", [$(this).attr('data-id')])
+        })
+
+    
+    })
+
+    function delete_supplier($id) {
+        start_loader();
+        $.ajax({
+            headers: {
+                "X-CSRFToken": '{{csrf_token}}'
+            },
+            url: "{% url 'delete_supplier' %}",
+            method: "POST",
+            data: {
+                id: $id
+            },
+            dataType: "json",
+            error: err => {
+                console.log(err)
+                alert_toast("An error occured.", 'error');
+                end_loader();
+            },
+            success: function(resp) {
+                if (typeof resp == 'object' && resp.status == 'success') {
+                    location.reload();
+                } else {
+                    alert_toast("An error occured.", 'error');
+                    end_loader();
+                }
+            }
+        })
+    }
+</script>
+<script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/dataTables.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'js/myjs.js' %}"></script>   
+{% endblock ScriptBlock %}

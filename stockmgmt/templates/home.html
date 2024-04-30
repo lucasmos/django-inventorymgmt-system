@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %} 
+{% block title %} Home {% endblock title %}
+
+
+{% block pageContent %}
+
+    <div style="color:#464646; font-style: bold; font-size: 3rem; border-bottom: 1px solid #464646;">Welcome, {{ request.user.username }}</div>
+
+    <br>
+
+    <div id="container" style="position: relative; height:45vh; border: 1.2mm ridge #4e6570; border-radius: 30px;" class="align-middle table-bordered">
+        <canvas id="bar-graph"></canvas>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-md-6">
+            <a href="{% url 'sales_list' %}" class="btn btn-success btn-lg btn-block btn-huge">Outgoing Stock(Sales)</a>
+        </div>
+        <div class="col-md-6">
+            <a href="{% url 'purchases' %}" class="btn btn-success btn-lg btn-block btn-huge">Incoming Stock(Purchases)</a>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="content-section">
+        <div class="row"><!-- Log on to codeastro.com for more projects -->
+
+            <div class="col-md-6">
+                <div style="color: #4e6570; font-style: bold; font-size: 1.3em; border-bottom: 2px solid #4e6570">Recent Sales</div><br>
+                {% for item in sales %}
+                    {% if not forloop.first %}
+                        <br><div style="border-bottom: 0.5px solid #4e6570"></div><br>
+                    {% endif %}
+                    <div class="row">               
+                        <div class="col-md-9"> 
+                            # ID: {{ forloop.counter }} <br>
+                            Transaction Code: #{{ item.transaction_code }} <br> 
+                            Item Purchased: <b>{{ item.item_count }}</b> <br>
+                            Item Price in KSH: Ksh {{ item.grand_total }} <br> 
+                            <small><i>{{ item.timestamp|date:'Y-m-d H:i'}}</i></small>
+                        </div>
+                        <div class="col-md-2"> <br>
+                            <button class="mdc-button mdc-button--raised p-1 icon-button filled-button--light mdc-ripple-upgraded view-data" type="button" data-id="{{ item.id }}" title="View Receipt">
+                                <i class="material-icons mdc-button__icon">receipt</i>
+                            </button> </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-6">
+                <div style="color: #4e6570; font-style: bold; font-size: 1.3em; border-bottom: 2px solid #4e6570">Recent Purchases</div><br>
+                {% for item in purchases %}
+                    {% if not forloop.first %}
+                        <br><div style="border-bottom: 0.5px solid #4e6570"></div><br>
+                    {% endif %}
+                    <div class="row">   <!-- Log on to codeastro.com for more projects -->            
+                        <div class="col-md-9">
+                            # ID: {{ forloop.counter }} <br> 
+                            Purchase ID: #{{ item.purchase_code }} <br> 
+                            Purchased by: <b>{{ item.supplier.supplier_name }}</b> <br>
+                            <small><i>{{ item.date_added|date:'Y-m-d H:i' }}</i></small>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div><!-- Log on to codeastro.com for more projects -->
+
+    <!-- Loading Chart JS -->
+    <script src="{% static 'js/chart.min.js' %}"></script>  
+    <script>
+        Chart.defaults.global.defaultFontColor = '#3c3c3c';
+    
+        //configuration for the bar graph
+        var barConfig = {
+            type: 'bar',
+            data: {
+                datasets: [{
+                    backgroundColor: '#1a79a5',
+                    label: 'Stock in Inventory',
+                    data: {{ data|safe }},
+                }],
+                labels: {{ labels|safe }}
+            },
+            options: {
+    responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            },
+        };
+    
+    
+        //runs all charts on loading the webpage
+        window.onload = function() {
+            var ctx = document.getElementById('bar-graph').getContext('2d');
+            window.BarStock = new Chart(ctx, barConfig);
+        };
+    
+        $(function() {
+            $('.view-data').click(function() {
+                uni_modal("Transaction's Receipt", "{% url 'receipt' %}?id=" + $(this).attr('data-id'))
+            })
+        })
+    </script>
+
+{% endblock pageContent %}
