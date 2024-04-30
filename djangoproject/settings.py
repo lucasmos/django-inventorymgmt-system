@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +28,7 @@ SECRET_KEY = 'django-insecure-62x^zwo+gh@l04rbbd%7e1r^n@1z%gxu%ud^_9%dnq)$v221(3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-secondary',
