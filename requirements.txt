@@ -13,7 +13,7 @@ crispy-bootstrap5==2024.2
 cryptography==42.0.5
 cssselect2==0.7.0
 dj-database-url==2.1.0
-Django==4.2.11
+Django==5.0.3
 django-ajax-datatable==4.4.5
 django-bootstrap5==23.4
 django-crispy-forms==2.1
