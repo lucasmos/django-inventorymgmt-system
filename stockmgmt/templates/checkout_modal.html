@@ -45,9 +45,8 @@
                 // Submit the form to the checkout_modal view
                 $('#pos-form').submit()
             } else if (payment_method === 'mpesa') {
-                // Handle M-Pesa payment logic here
-                // You can redirect to a different view or perform an AJAX request
-                console.log('M-Pesa payment selected');
+                // Redirect to mpesa.html to finalize the payment
+                window.location.href = "{% url 'mpesa' %}?amount={{ grand_total }}";
             }
         })
     })

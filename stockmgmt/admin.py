@@ -19,6 +19,16 @@ class StockHistorySearch(admin.ModelAdmin):
     list_filter = ['item_ID', 'category']
     search_fields = ['category', 'item_name', 'start_date', 'end_date']
 
+class MPesaTransactionAdmin(admin.ModelAdmin):
+    """
+    Admin configuration for the MPesaTransaction model.
+    """
+    list_display = ('phone_number', 'amount', 'account_reference', 'transaction_desc')
+    search_fields = ['phone_number', 'account_reference', 'transaction_desc']
+    list_filter = ['phone_number', 'amount']
+
+
+
 
 #admin.site.register(Stock, StockCreateAdmin)
 admin.site.register(Category)
@@ -29,4 +39,4 @@ admin.site.register(Sales)
 admin.site.register(SalesItems)
 admin.site.register(Supplier)
 admin.site.register(Purchases)
-#admin.site.register(PurchaseItem)
+admin.site.register(MPesaTransaction, MPesaTransactionAdmin)

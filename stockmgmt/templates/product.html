@@ -25,6 +25,7 @@
                         <th class="text-center py-1">Product Code</th>
                         <th class="text-center py-1">Product Name</th>
                         <th class="text-center py-1">Description</th>
+                        <th class="text-center py-1">Price</th>
                         <th class="text-center py-1">Quantity in Stock</th>
                         <th class="text-center py-1">Reorder Level</th>
                         <th class="text-center py-1">Date Added</th>
@@ -41,6 +42,7 @@
                         <td class="px-2 py-1 text-start">{{ product.code }}</td>
                         <td class="px-2 py-1 text-start">{{ product.name }}</td>
                         <td class="px-2 py-1 text-start">{{ product.description }}</td>
+                        <td class="px-2 py-1 text-start">{{ product.price }}</td>
                         {% if product.quantity <= product.reorder_level %}
                         <td class="px-2 py-1 text-start" style="background-color: #FFC107;">{{ product.quantity }}</td>
                         {% else %}
