@@ -51,8 +51,6 @@ urlpatterns = [
     path('save_purchase',views.save_purchase,name='save_purchase'),
     path('manage_purchase/<int:pk>',views.manage_purchase,name='manage_purchase-pk'),
     path('delete_purchase',views.delete_purchase,name='delete_purchase'),
-    path('mpesa/', views.mpesa, name='mpesa'),
-    path('records/', views.records, name='records'),
     path('admin/', admin.site.urls),
     path('register/', views.register_request, name="register"),
     path('login/', views.login_request, name="login"),

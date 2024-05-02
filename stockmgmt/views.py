@@ -14,6 +14,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import get_template
+from django.urls import reverse
 from xhtml2pdf import pisa
 from django.db.models import Sum
 from django.db import transaction as db_transaction
@@ -703,67 +704,3 @@ def delete_purchase(request):
     except:
         resp['status'] = 'failed'
     return HttpResponse(json.dumps(resp), content_type="application/json")
-
-def mpesa(request):
-    """
-    Handles the index page view and processes STK push requests.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
-
-    Returns:
-        HttpResponse: The HTTP response containing the result of the STK push request.
-    """
-    if request.method == 'POST':
-        form = MPesaTransactionForm(request.POST)
-        if form.is_valid():
-            # Extracting form data
-            phone_number = form.cleaned_data['phone_number']
-            amount = form.cleaned_data['amount']
-            account_reference = form.cleaned_data['account_reference']
-            transaction_desc = form.cleaned_data['transaction_desc']
-
-            # Logic to send STK push request
-            cl = MpesaClient()
-            business_short_code = settings.MPESA_SHORTCODE
-            callback_url = 'https://api.darajambili.com/express-payment'
-            data_to_hash = f"{business_short_code}{settings.MPESA_PASSKEY}".encode('utf-8')
-            hashed_data = hashlib.sha256(data_to_hash).hexdigest()
-
-            # Sending STK push request
-            response = cl.stk_push(
-                phone_number,
-                amount,
-                account_reference,
-                transaction_desc,
-                callback_url,
-            )
-
-            # Save transaction to the database
-            form.save()
-
-            return HttpResponse(response)
-    else:
-        form = MPesaTransactionForm()
-
-    return render(request, 'mpesa.html', {'form': form})
-
-def records(request):
-    """
-    Retrieves and displays transaction records from the database.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
-
-    Returns:
-        HttpResponse: The HTTP response containing the transaction records.
-    """
-    try:
-        transaction_records = MPesaTransaction.objects.all()
-    except MPesaTransaction.DoesNotExist:
-        transaction_records = None
-    except Exception:
-        transaction_records = None
-
-    context = {'transaction_records': transaction_records}
-    return render(request, 'records.html', context)
