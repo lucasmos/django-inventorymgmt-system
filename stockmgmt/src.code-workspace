@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "django-mpesa-integration",
+			"path": "../django-mpesa-integration"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}
